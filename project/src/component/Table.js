@@ -33,7 +33,7 @@ function Tables() {
       />
     </svg>
   );
-  const [deleteBook, setDeletebook] = useState([]);
+  const [deleteBook, setDeletebook] = useState(false);
   const [book, setbook] = useState([]);
   useEffect(() => {
     fetch("http://52.221.185.255:3001/api/books", {
@@ -44,8 +44,9 @@ function Tables() {
       .then((res) => res.json())
       .then((data) => setbook(data.data));
   }, [deleteBook]);
-  console.log(book);
+
   const handleEdit = (del) => {
+    setDeletebook(true)
     console.log(del);
     fetch(`http://52.221.185.255:3001/api/deletebook/${del}`, {
       method: "DELETE",
@@ -56,7 +57,7 @@ function Tables() {
     })
       .then((res) => res.json())
       .then((response) => {
-        setDeletebook(response.data);
+        setDeletebook(false);
       });
   };
 
@@ -88,8 +89,8 @@ function Tables() {
                 <td>{data.isbn}</td>
                 <td>{data.publish_date} </td>
                 <td></td>
-                <td onClick={() => handleEdit(data._id)}>{edit}</td>
-                <td>{trash}</td>
+                <td>{edit}</td>
+                <td onClick={() => handleEdit(data._id)}>{trash}</td>
               </tr>
             );
           })}
