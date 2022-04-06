@@ -1,8 +1,10 @@
-import { Table, Button } from "react-bootstrap";
+import { Table, Modal, Button, Form } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
+import TestModal from "./TestModal";
 
-function Tables() {
+function Tables(props) {
+  const { changed, setChanged } = props.changedPass;
   const trash = (
     <svg
       width="16"
@@ -18,22 +20,7 @@ function Tables() {
       />
     </svg>
   );
-  const edit = (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M10.89 0.390001L13.6 3.11C14.06 3.57 14.02 4.35 13.63 4.75L5.62 12.77L0.0599976 13.93L1.22 8.35C1.22 8.35 8.82 0.72 9.21 0.32C9.6 -0.0699996 10.43 -0.0699995 10.89 0.390001ZM8.16 3.18L2.57 8.79L3.68 9.9L9.22 4.25L8.16 3.18ZM5.19 11.41L10.77 5.81L9.7 4.73L4.11 10.33L5.19 11.41Z"
-        fill="black"
-        fill-opacity="0.3"
-      />
-    </svg>
-  );
-  const [deleteBook, setDeletebook] = useState(false);
+
   const [book, setbook] = useState([]);
   useEffect(() => {
     fetch("http://52.221.185.255:3001/api/books", {
@@ -43,10 +30,10 @@ function Tables() {
     })
       .then((res) => res.json())
       .then((data) => setbook(data.data));
-  }, [deleteBook]);
+  }, [changed]);
 
-  const handleEdit = (del) => {
-    setDeletebook(true)
+  const handleDelete = (del) => {
+    setChanged(!changed);
     console.log(del);
     fetch(`http://52.221.185.255:3001/api/deletebook/${del}`, {
       method: "DELETE",
@@ -57,8 +44,12 @@ function Tables() {
     })
       .then((res) => res.json())
       .then((response) => {
-        setDeletebook(false);
+        setChanged(!changed);
       });
+  };
+  const handleDataChange = () => {
+    console.log("call");
+    setChanged(!changed);
   };
 
   let number = 0;
@@ -77,7 +68,6 @@ function Tables() {
           </tr>
         </thead>
         <tbody>
-          {" "}
           {book.map((data) => {
             number = number + 1;
             return (
@@ -89,8 +79,15 @@ function Tables() {
                 <td>{data.isbn}</td>
                 <td>{data.publish_date} </td>
                 <td></td>
-                <td>{edit}</td>
-                <td onClick={() => handleEdit(data._id)}>{trash}</td>
+                <td>
+                  <TestModal
+                    data={data}
+                    type="edit"
+                    changedPass={props.changedPass}
+                  />
+                </td>
+
+                <td onClick={() => handleDelete(data._id)}>{trash}</td>
               </tr>
             );
           })}
