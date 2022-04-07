@@ -7,3 +7,12 @@
   display: flex;
   justify-content: space-between;
 }
+
+.hover svg:hover path {
+  fill: #ef5350 !important;
+  fill-opacity: 1;
+}
+.hover1 svg:hover path {
+  fill: #83d97c !important;
+  fill-opacity: 1;
+}
